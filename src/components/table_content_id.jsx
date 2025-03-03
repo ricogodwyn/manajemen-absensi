@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
-import { fetchDataTable } from "../apiClient/apiHandler";
-import { useNavigate } from "react-router-dom";
+import { fetchDataTableID } from "../apiClient/apiHandler";
+import { useParams } from "react-router-dom";
 
 // offset = (page-1) * 20
 
-export default function TableContent() {
+export default function TableContentID() {
   const [TotalPage, setTotalPage] = useState(0);
   const [Page, setPage] = useState(1);
   const [Datas, setData] = useState([]);
   const [Loading, setLoading] = useState(true);
   let dataCount = 0;
   const limit = 10;
-  const navigate = useNavigate();
-  const fetchCheckInOut = async (offset, search, date) => {
+  const userId = useParams();
+  const fetchCheckInOutPerId = async (id, offset, search) => {
     try {
       setLoading(true);
-      const response = await fetchDataTable(offset, search, date);
-      console.log(response);
+      const response = await fetchDataTableID(id, offset, search);
+      console.log(response.data);
       dataCount = parseInt(response.data.data_count, 10); // Convert to integer
       console.log(dataCount);
       setTotalPage(Math.ceil(dataCount / limit));
 
-      setData(response.data.data);
+      setData(response.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -46,7 +46,7 @@ export default function TableContent() {
   };
   useEffect(() => {
     let newOffset = (Page - 1) * limit;
-    fetchCheckInOut(newOffset, "", "2024-07-25");
+    fetchCheckInOutPerId(userId.userId, newOffset, "", "2024-07-25");
   }, [Page]);
 
   const handleNext = () => {
@@ -64,28 +64,39 @@ export default function TableContent() {
       console.log("prev");
     }
   };
-  const handleToTableId = (id) => {
-    navigate(`/table-content/${id}`);
-  };
-
+  console.log(Datas.user_info);
   return (
     <>
-      <div id="content" className="p-4 sm:ml-64 dark:bg-gray-900 h-lvh">
+      <div
+        id="content"
+        className="p-4 sm:ml-64 h-full dark:bg-gray-900 dark:text-white"
+      >
         {Loading ? (
-          <div className="dark:text-white">Loading</div>
+          <div>Loading</div>
         ) : (
           <>
-            <h1 className="text-xl dark:text-white">Tabel Data Absensi</h1>
+            <h1 className="text-xl">Tabel Data Absensi</h1>
+            <div className="w-full dark:bg-gray-700 mt-5 p-4 rounded-lg bg-blue-200">
+              <h1>
+                Nama: {Datas.user_info.Nama ? Datas.user_info.Nama : "Kosong"}{" "}
+              </h1>
+              <h1>
+                User ID:{" "}
+                {Datas.user_info.userid ? Datas.user_info.userid : "Kosong"}{" "}
+              </h1>
+              <h1>
+                Departemen:{" "}
+                {Datas.user_info.DeptName ? Datas.user_info.DeptName : "Kosong"}{" "}
+              </h1>
+              <h1>
+                Nomor Kartu:{" "}
+                {Datas.user_info.Cardnum ? Datas.user_info.Cardnum : "Kosong"}
+              </h1>
+            </div>
             <div className="relative overflow-x-auto mt-5 rounded-lg ">
               <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
-                      Name
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      User ID
-                    </th>
                     <th scope="col" className="px-6 py-3">
                       Date
                     </th>
@@ -93,28 +104,16 @@ export default function TableContent() {
                       Hour
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      In/out
+                      Status
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {Datas.map((data) => (
+                  {Datas.time.map((data) => (
                     <tr
-                      key={data.ID}
+                      key={data.CheckTime}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
                     >
-                      <th
-                        scope="row"
-                        className={`px-6 py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer hover:opacity-60 ${
-                          data.Name ? "dark:text-white" : "text-red-400"
-                        }`}
-                        onClick={() => {
-                          handleToTableId(data.userid);
-                        }}
-                      >
-                        {data.Name ? data.Name : "Nama Kosong"}
-                      </th>
-                      <td className="px-6 py-4">{data.userid}</td>
                       <td className="px-6 py-4">
                         {formatDateTimeToDate(data.CheckTime)}
                       </td>
@@ -131,8 +130,8 @@ export default function TableContent() {
             </div>
           </>
         )}
-        <div className="mt-9 flex justify-end mr-20 items-center dark:text-white">
-          <h2 className="">
+        <div className="my-9 flex justify-end mr-20 items-center dark:text-white">
+          <h2>
             showing page {Page} of {TotalPage}
           </h2>
           <button

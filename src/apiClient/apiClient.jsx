@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const base_url = "https://6e95-182-253-246-147.ngrok-free.app/api/in-out";
+const base_url = "/api/in-out";
 
 export const apiClient = axios.create({
   baseURL: base_url,
@@ -8,6 +8,7 @@ export const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
     // You can add other headers like authorization token here
+    "ngrok-skip-browser-warning": "true",
   },
 });
 apiClient.interceptors.response.use(
@@ -24,7 +25,7 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await axios.post("/refresh", { withCredentials: true });
+        await apiClient.post("/refresh", { withCredentials: true });
 
         return apiClient(originalRequest); // Retry the original request
       } catch (refreshError) {

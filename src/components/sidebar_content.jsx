@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { logoutHandler } from "../apiClient/apiHandler";
-import CrudModal from "./crud_modal";
+import CrudModal from "./register_modal";
 export default function SidebarContent() {
   const navigate = useNavigate();
 

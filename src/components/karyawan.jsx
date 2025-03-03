@@ -16,12 +16,15 @@ export default function Karyawan() {
   }, []);
   return (
     <>
-      <div id="content" className="p-4 sm:ml-64">
-        <h1 className="text-xl">Karyawan</h1>
+      <div
+        id="content"
+        className="p-4 sm:ml-64 h-lvh dark:bg-gray-900 dark:text-white"
+      >
+        <h1 className="text-xl ">Karyawan</h1>
         <div className="grid grid-cols-12 gap-3 my-5">
           <div
             id="card"
-            className="col-span-6 sm:col-span-3 p-3 bg-blue-200 shadow-md rounded-md flex flex-col items-center cursor-pointer"
+            className="col-span-6 sm:col-span-3 p-3 dark:bg-gray-700 bg-blue-200 shadow-md rounded-md flex flex-col items-center cursor-pointer"
             onClick={() => {
               console.log("hello world");
             }}

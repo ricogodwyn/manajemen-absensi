@@ -36,7 +36,6 @@ export default function Login() {
       );
     }
   };
-
   return (
     <>
       <div className="bg-slate-300 h-lvh w-full flex items-center justify-center">

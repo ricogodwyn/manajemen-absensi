@@ -7,6 +7,7 @@ import AuthNavigate from "./components/auth_navigate";
 
 import Login from "./components/login";
 import Layout from "./components/Layout";
+import TableContentID from "./components/table_content_id";
 
 function App() {
   return (
@@ -25,6 +26,10 @@ function App() {
             ></Route>
             <Route path="/table-content" element={<TableContent />}></Route>
             <Route path="/karyawan" element={<Karyawan />}></Route>
+            <Route
+              path="/table-content/:userId"
+              element={<TableContentID />}
+            ></Route>
           </Routes>
         </Layout>
       </Router>
